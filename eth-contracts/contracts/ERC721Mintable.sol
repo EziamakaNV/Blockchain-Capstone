@@ -1,19 +1,19 @@
-//pragma solidity ^0.5.0;
+pragma solidity ^0.5.0;
 // SPDX-License-Identifier: MIT
-pragma solidity >=0.4.21 <= 0.8.1;
+//pragma solidity >=0.4.21 <= 0.8.1;
 
-// import 'openzeppelin-solidity/contracts/utils/Address.sol';
-// import 'openzeppelin-solidity/contracts/drafts/Counters.sol';
-// import 'openzeppelin-solidity/contracts/math/SafeMath.sol';
-// import 'openzeppelin-solidity/contracts/token/ERC721/IERC721Receiver.sol';
-//import "./Oraclize.sol";
+import 'openzeppelin-solidity/contracts/utils/Address.sol';
+import 'openzeppelin-solidity/contracts/drafts/Counters.sol';
+import 'openzeppelin-solidity/contracts/math/SafeMath.sol';
+import 'openzeppelin-solidity/contracts/token/ERC721/IERC721Receiver.sol';
+import "./Oraclize.sol";
 
-import "./ProvableAPI_0.6.sol";
+//import "./ProvableAPI_0.6.sol";
 
-import "@openzeppelin/contracts/utils/Address.sol";
-import "@openzeppelin/contracts/utils/Counters.sol";
-import "@openzeppelin/contracts/utils/math/SafeMath.sol";
-import "@openzeppelin/contracts/token/ERC721/IERC721Receiver.sol";
+// import "@openzeppelin/contracts/utils/Address.sol";
+// import "@openzeppelin/contracts/utils/Counters.sol";
+// import "@openzeppelin/contracts/utils/math/SafeMath.sol";
+// import "@openzeppelin/contracts/token/ERC721/IERC721Receiver.sol";
 
 contract Ownable {
     //  TODO's
@@ -25,7 +25,7 @@ contract Ownable {
     }
     //  2) create an internal constructor that sets the _owner var to the creater of the contract
 
-    constructor() {
+    constructor() internal {
         _owner = msg.sender;
         emit OwnershipTransferred(address(0), _owner);
     }
@@ -57,7 +57,7 @@ contract Pausable is Ownable{
         _paused = true;
     }
     //  3) create an internal constructor that sets the _paused variable to false
-    constructor() {
+    constructor() internal {
         _paused = false;
     }
 
@@ -88,7 +88,7 @@ contract ERC165 {
      * @dev A contract implementing SupportsInterfaceWithLookup
      * implement ERC165 itself
      */
-    constructor () {
+    constructor () internal {
         _registerInterface(_INTERFACE_ID_ERC165);
     }
 
@@ -141,7 +141,7 @@ contract ERC721 is Pausable, ERC165 {
 
     bytes4 private constant _INTERFACE_ID_ERC721 = 0x80ac58cd;
 
-    constructor () {
+    constructor () public {
         // register the supported interfaces to conform to ERC721 via ERC165
         _registerInterface(_INTERFACE_ID_ERC721);
     }
@@ -240,7 +240,7 @@ contract ERC721 is Pausable, ERC165 {
 
     // @dev Internal function to mint a new token
     // TIP: remember the functions to use for Counters. you can refresh yourself with the link above
-    function _mint(address to, uint256 tokenId) virtual internal {
+    function _mint(address to, uint256 tokenId) internal {
 
         // TODO revert if given tokenId already exists or given address is invalid
         require(!_exists(tokenId), "Token does not exist");
@@ -256,7 +256,7 @@ contract ERC721 is Pausable, ERC165 {
 
     // @dev Internal function to transfer ownership of a given token ID to another address.
     // TIP: remember the functions to use for Counters. you can refresh yourself with the link above
-    function _transferFrom(address from, address to, uint256 tokenId) virtual internal {
+    function _transferFrom(address from, address to, uint256 tokenId) internal {
 
         // TODO: require from address is the owner of the given token
         require(_tokenOwner[tokenId] == from, "You must be the owner of the token");
@@ -328,7 +328,7 @@ contract ERC721Enumerable is ERC165, ERC721 {
     /**
      * @dev Constructor function
      */
-    constructor () {
+    constructor  () public{
         // register the supported interface to conform to ERC721Enumerable via ERC165
         _registerInterface(_INTERFACE_ID_ERC721_ENUMERABLE);
     }
@@ -370,7 +370,7 @@ contract ERC721Enumerable is ERC165, ERC721 {
      * @param to address to receive the ownership of the given token ID
      * @param tokenId uint256 ID of the token to be transferred
      */
-    function _transferFrom(address from, address to, uint256 tokenId) override internal {
+    function _transferFrom(address from, address to, uint256 tokenId) internal {
         super._transferFrom(from, to, tokenId);
 
         _removeTokenFromOwnerEnumeration(from, tokenId);
@@ -384,7 +384,7 @@ contract ERC721Enumerable is ERC165, ERC721 {
      * @param to address the beneficiary that will own the minted token
      * @param tokenId uint256 ID of the token to be minted
      */
-    function _mint(address to, uint256 tokenId) override internal {
+    function _mint(address to, uint256 tokenId) internal {
         super._mint(to, tokenId);
 
         _addTokenToOwnerEnumeration(to, tokenId);
@@ -432,7 +432,8 @@ contract ERC721Enumerable is ERC165, ERC721 {
         // To prevent a gap in from's tokens array, we store the last token in the index of the token to delete, and
         // then delete the last slot (swap and pop).
 
-        uint256 lastTokenIndex = _ownedTokens[from].length - 1;
+        //uint256 lastTokenIndex = _ownedTokens[from].length - 1;
+        uint256 lastTokenIndex = _ownedTokens[from].length.sub(1);
         uint256 tokenIndex = _ownedTokensIndex[tokenId];
 
         // When the token to delete is the last token, the swap operation is unnecessary
@@ -444,8 +445,8 @@ contract ERC721Enumerable is ERC165, ERC721 {
         }
 
         // This also deletes the contents at the last position of the array
-        //_ownedTokens[from].length--;
-        _ownedTokens[from].pop();
+        _ownedTokens[from].length--;
+        //_ownedTokens[from].pop();
 
         // Note that _ownedTokensIndex[tokenId] hasn't been cleared: it still points to the old slot (now occupied by
         // lastTokenId, or just over the end of the array if the token was the last one).
@@ -460,7 +461,8 @@ contract ERC721Enumerable is ERC165, ERC721 {
         // To prevent a gap in the tokens array, we store the last token in the index of the token to delete, and
         // then delete the last slot (swap and pop).
 
-        uint256 lastTokenIndex = _allTokens.length - 1;
+        //uint256 lastTokenIndex = _allTokens.length - 1;
+        uint256 lastTokenIndex = _allTokens.length.sub(1);
         uint256 tokenIndex = _allTokensIndex[tokenId];
 
         // When the token to delete is the last token, the swap operation is unnecessary. However, since this occurs so
@@ -472,13 +474,13 @@ contract ERC721Enumerable is ERC165, ERC721 {
         _allTokensIndex[lastTokenId] = tokenIndex; // Update the moved token's index
 
         // This also deletes the contents at the last position of the array
-        //_allTokens.length--;
-        _allTokens.pop();
+        _allTokens.length--;
+        //_allTokens.pop();
         _allTokensIndex[tokenId] = 0;
     }
 }
 
-contract ERC721Metadata is ERC721Enumerable, usingProvable {
+contract ERC721Metadata is ERC721Enumerable, usingOraclize {
     
     // TODO: Create private vars for token _name, _symbol, and _baseTokenURI (string)
     string private _name;
@@ -497,7 +499,7 @@ contract ERC721Metadata is ERC721Enumerable, usingProvable {
      */
 
 
-    constructor (string memory namex, string memory symbolx, string memory baseTokenURIx) {
+    constructor (string memory namex, string memory symbolx, string memory baseTokenURIx) public  {
         // TODO: set instance var values
         _name = namex;
         _symbol = symbolx;
@@ -547,7 +549,7 @@ contract ERC721Metadata is ERC721Enumerable, usingProvable {
 //      -returns a true boolean upon completion of the function
 //      -calls the superclass mint and setTokenURI functions
 contract EmpireHomesERC721Token is ERC721Metadata ("Empire Homes Token", "EHT", "https://s3-us-west-2.amazonaws.com/udacity-blockchain/capstone/") {
-    function mint(address to, uint256 tokenId) virtual public onlyOwner returns (bool) {
+    function mint(address to, uint256 tokenId) public onlyOwner returns (bool) {
         super._mint(to, tokenId);
         super._setTokenURI(tokenId);
         return true;

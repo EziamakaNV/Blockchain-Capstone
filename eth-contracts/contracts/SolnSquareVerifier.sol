@@ -1,6 +1,7 @@
 //pragma solidity >=0.4.21 <0.6.0;
 // SPDX-License-Identifier: MIT
-pragma solidity >=0.4.21 <=0.8.1;
+//pragma solidity >=0.4.21 <=0.8.1;
+pragma solidity ^0.5.0;
 // TODO define a contract call to the zokrates generated solidity contract <Verifier> or <renamedVerifier>
 import "./Verifier.sol";
 import "./ERC721Mintable.sol";
@@ -13,7 +14,7 @@ contract SolnSquareVerifier is EmpireHomesERC721Token{
 
     Verifier private verifierContract;
 
-    constructor(address verifierAddress) {
+    constructor(address verifierAddress) public {
         verifierContract = Verifier(verifierAddress);
     }
     // TODO define a solutions struct that can hold an index & an address
@@ -40,8 +41,8 @@ contract SolnSquareVerifier is EmpireHomesERC721Token{
 
 
     // TODO Create a function to add the solutions to the array and emit the event
-    function addSolution(Verifier.Proof memory proof, uint[2] memory input, address account, uint256 tokenID) public {
-        require(verifierContract.verifyTx(proof, input), "unable to verify the solution");
+    function addSolution(uint[2] memory a, uint[2][2] memory b, uint[2] memory c, uint[2] memory input, address account, uint256 tokenID) public {
+        require(verifierContract.verifyTx(a,b,c, input), "unable to verify the solution");
 
         bytes32 solutionKey = keccak256(abi.encodePacked(input[0], input[1]));
         require(solutions[solutionKey].tokenID == 0, "This solution has already been used previously; You need to create a new one.");
@@ -59,7 +60,7 @@ contract SolnSquareVerifier is EmpireHomesERC721Token{
     // TODO Create a function to mint new NFT only after the solution has been verified
     //  - make sure the solution is unique (has not been used before)
     //  - make sure you handle metadata as well as tokenSuplly
-    function mint(address to, uint256 tokenID) public override returns(bool) {
+    function mint(address to, uint256 tokenID) public returns(bool) {
     bytes32 solutionKey = uniqueSolutions[tokenID];
     require(solutionKey != bytes32(0), "no solution added for given token ID");
     require(!solutions[solutionKey].isMinted, "the token has already been minted");
