@@ -19,7 +19,8 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
-pragma solidity > 0.6.1 < 0.9.0; // Incompatible compiler version - please select a compiler within the stated pragma range, or use a different version of the provableAPI!
+pragma solidity > 0.6.1 <=0.8.1; // Incompatible compiler version - please select a compiler within the stated pragma range, or use a different version of the provableAPI!
+// SPDX-License-Identifier: MIT
 
 // Dummy contract only used to emit to end-user they are using wrong solc
 abstract contract solcChecker {

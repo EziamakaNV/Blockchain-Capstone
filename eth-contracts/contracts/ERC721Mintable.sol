@@ -1,5 +1,6 @@
 //pragma solidity ^0.5.0;
-pragma solidity >=0.4.21 <  0.9.0;
+// SPDX-License-Identifier: MIT
+pragma solidity >=0.4.21 <= 0.8.1;
 
 // import 'openzeppelin-solidity/contracts/utils/Address.sol';
 // import 'openzeppelin-solidity/contracts/drafts/Counters.sol';
@@ -496,11 +497,11 @@ contract ERC721Metadata is ERC721Enumerable, usingProvable {
      */
 
 
-    constructor (string memory name, string memory symbol, string memory baseTokenURI) {
+    constructor (string memory namex, string memory symbolx, string memory baseTokenURIx) {
         // TODO: set instance var values
-        _name = name;
-        _symbol = symbol;
-        _baseTokenURI = baseTokenURI;
+        _name = namex;
+        _symbol = symbolx;
+        _baseTokenURI = baseTokenURIx;
 
         _registerInterface(_INTERFACE_ID_ERC721_METADATA);
     }
