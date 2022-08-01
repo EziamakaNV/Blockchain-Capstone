@@ -2,25 +2,29 @@ var EmpireHomesERC721Token = artifacts.require('EmpireHomesERC721Token');
 
 contract('TestERC721Mintable', accounts => {
 
+    console.log("account1: " + accounts[0]);
     const account_one = accounts[0];
     const account_two = accounts[1];
     const totalSupply = 3;
 
     describe('match erc721 spec', function () {
-        
-        beforeEach(async function () { 
-            this.contract = await EmpireHomesERC721Token.new({from: account_one});
+
+        beforeEach(async function () {
+            this.contract = await EmpireHomesERC721Token.new({ from: account_one });
 
             // TODO: mint multiple tokens
-            this.contract.mint(account_one, 1, {from: account_one});
-            this.contract.mint(account_one, 2, {from: account_one});
-            this.contract.mint(account_two, 3, {from: account_one});
+            await this.contract.mint(account_one, 1, { from: account_one });
+            await this.contract.mint(account_one, 2, { from: account_one });
+            await this.contract.mint(account_two, 3, { from: account_one });
         })
 
-        it('should return total supply', async function () { 
-            let result = await this.contract.totalSupply.call();
+        it('should return total supply', async function () {
+            let result = await this.contract.totalSupply();
+            console.log(result);
             assert.equal(totalSupply, result);
         })
+
+
 
         it('should get token balance', async function () { 
             let result = await this.contract.balanceOf(account_one);
@@ -44,7 +48,7 @@ contract('TestERC721Mintable', accounts => {
             result = await this.contract.balanceOf(account_one);
             assert.equal(3, result, "account 1 gains 1 token");
 
-            result = await this.contract.balanceOf(account2);
+            result = await this.contract.balanceOf(account_two);
             assert.equal(0, result, "account 2 loses 1 token");
 
             result = await this.contract.totalSupply.call();
